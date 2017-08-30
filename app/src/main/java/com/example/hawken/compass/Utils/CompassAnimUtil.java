@@ -29,14 +29,12 @@ public class CompassAnimUtil {
 
     private boolean mLastAccelerometerSet, mLastMagnetometerSet;
 
-    //initialize sensor manager and sensors that will be used
     public CompassAnimUtil(SensorManager service){
         mSensorManager = service;
         setmAccelerometer(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
         setmMagnetometer(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
     }
 
-    //filter out the lower frequency movements or small jitters
     protected float[] lowPassFilter( float[] input, float[] output ) {
         if ( output == null )
             return input;
@@ -47,8 +45,6 @@ public class CompassAnimUtil {
         return output;
     }
 
-    //when sensor changed has been detected, check which sensor was changed, add current values, check orientation and set
-    //  degrees from current location to destination and return rotation animation back
     public RotateAnimation onSensorChanged(SensorEvent event, Location currentLoc, Location target){
         if (event.sensor == mAccelerometer) {
             mLastAccelerometer = lowPassFilter(event.values, mLastAccelerometer);
@@ -95,7 +91,6 @@ public class CompassAnimUtil {
         return null;
     }
 
-    //stop the sensor service when user kills app or goes to another app
     public void onStopSensorService(CompassActivity context){
         mSensorManager.unregisterListener(context, getmAccelerometer());
         mSensorManager.unregisterListener(context, getmMagnetometer());
@@ -103,7 +98,6 @@ public class CompassAnimUtil {
         mLastMagnetometerSet = false;
     }
 
-    //start sensor service when app is started
     public void onStartSensorService(CompassActivity context){
         mSensorManager.registerListener(context, getmAccelerometer(), SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(context, getmMagnetometer(), SensorManager.SENSOR_DELAY_GAME);
